@@ -1,4 +1,4 @@
-def head<A>(xs: A[]) -> Maybe<A>:
+def List/head<A>(xs: A[]) -> Maybe<A>:
   match xs:
     case []:
       @None{}

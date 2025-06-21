@@ -1,22 +1,18 @@
 # WanShi is a library of Bend programs & proofs.
 
-Our goal is to:
+# Bend Usage
 
-- Port code from the `./kindbook/` dir to WanShi
-
-- Implement all sorts of functional algorithms on it
-
-Note that Bend automatically imports definitions by looking at a file of
-corresponding name. For example, in:
+Check a file, and run `main` (if present):
 
 ```
-def main() -> Nat:
-  Foo/bar(123)
+bend Path/To/file.bend
 ```
 
-Bend will automatically import `Foo/bar` from one of:
-- `./Foo/bar.bend`
-- `./Foo/bar/_.bend`
+NOTES:
+
+- Always check and test a file after writing it.
+
+- Write only one definition per file.
 
 # Bend Syntax Reference
 
@@ -223,6 +219,40 @@ Constructor:
 ```
 
 You can also pattern-match on constructors.
+
+## Holes, Implicits, Type-Classes, Unification
+
+Bend has *none* of these. Every type must be written explicitly in the source
+code. For example, to call the identity function:
+
+```python
+def id<A>(x: A) -> A:
+  x
+```
+
+The user MUST provide the polymorphic type:
+
+```
+id<Nat>(3)
+```
+
+This is also the case through the entire language.
+
+## Imports
+
+Bend automatically imports definitions from corresponding file names.
+
+For example, in the file:
+
+```
+def main() -> Nat:
+  Foo/bar(123)
+```
+
+Bend will automatically import `Foo/bar` from one of:
+- `./Foo/bar.bend`
+- `./Foo/bar/_.bend`
+
 
 # Examples
 
