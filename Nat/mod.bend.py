@@ -1,8 +1,8 @@
 def Nat/mod(a: Nat, b: Nat) -> Nat:
   match b:
-    case 0:
+    case 0n:
       a
-    case 1 + q:
+    case 1n + q:
       match Nat/lt(a, b):
         case True:
           a

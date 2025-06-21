@@ -1,6 +1,6 @@
 def Nat/add(a: Nat, b: Nat) -> Nat:
   match a:
-    case 0:
+    case 0n:
       b
-    case 1 + p:
-      1 + Nat/add(p, b)
+    case 1n + p:
+      1n + Nat/add(p, b)

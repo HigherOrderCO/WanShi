@@ -14,6 +14,14 @@ NOTES:
 
 - Write only one definition per file.
 
+- We're naming files `.bend.py` for better syntax highlighting
+
+- You can call just `bend file.bend.py` instead
+
+- You can use '()' as a hole to inspect a location's context and goal
+
+- Prove theorems step by step, using `()`'s to inspect intermediate goals
+
 # Bend Syntax Reference
 
 ## Comments
@@ -152,7 +160,7 @@ h <> t          # Cons
 ### Equality
 
 ```python
-{==}            # Reflexivity proof
+finally         # Reflexivity proof
 ```
 
 ## Type Annotations
@@ -219,6 +227,17 @@ Constructor:
 ```
 
 You can also pattern-match on constructors.
+
+## Rewrite
+
+Given `e : T{a == b}`, the following statement:
+
+```
+rewrite e
+```
+
+Will rewrite all occurrences of `a` by `b` in the goal. This is a syntax sugar
+for pattern-matching on the propositional equality constructor, `finally`.
 
 ## Holes, Implicits, Type-Classes, Unification
 
@@ -326,24 +345,24 @@ def mirror<A>(t: Tree(A)) -> Tree(A):
 ```python
 # Identity function is identity
 def id_is_id<A>(x: A) -> A{id(x) == x}:
-  {==}
+  finally
 
 # Symmetry of equality
 def sym<A>(a: A, b: A, e: A{a == b}) -> A{b == a}:
-  {==} = e
-  {==}
+  rewrite e
+  finally
 
 # Transitivity of equality
 def trans<A>(a: A, b: A, c: A, e1: A{a == b}, e2: A{b == c}) -> A{a == c}:
-  {==} = e1
-  {==} = e2
-  {==}
+  rewrite e1
+  rewrite e2
+  finally
 
 # List concatenation is associative
 def append_assoc<A>(xs: A[], ys: A[], zs: A[]) -> A[]{append(append(xs, ys), zs) == append(xs, append(ys, zs))}:
   match xs:
     case []:
-      {==}
+      finally
     case h <> t:
       # Goal transforms to: A[]{h <> append(append(t, ys), zs) == h <> append(t, append(ys, zs))}
       1 <> append_assoc(t, ys, zs)
