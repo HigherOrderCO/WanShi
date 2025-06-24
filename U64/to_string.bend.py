@@ -6,7 +6,7 @@ def U64/to_string/go(n: U64, s: String) -> String:
       case h <> t:
         s
   else:
-    c = U64/to_char((n % 10) + 48)
+    c = U64_TO_CHAR((n % 10) + 48)
     U64/to_string/go(n / 10, c <> s)
 
 def U64/to_string(n: U64) -> String:
