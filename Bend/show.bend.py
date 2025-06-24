@@ -1,13 +1,3 @@
-#./../../Bend2/src/Core/Type.hs#
-
-#./../Bend.md#
-#./../Bend/Term.bend.py#
-
-# TODO: complete the function below
-# Note: use 'String/flatten(["foo", "bar", ...])' to concat strings
-
-# now, implement the complete show fn
-
 def Bend/show(tm: Bend/Term) -> String:
   match tm:
     case @Var{k,i}:
@@ -17,8 +7,8 @@ def Bend/show(tm: Bend/Term) -> String:
     case @Sub{t}:
       "unreachable"
     case @Fix{k,f}:
-      body = Bend/show(f(@Var{k,0}))
-      String/flatten(["μ", k, ". ", body])
+      f = Bend/show(f(@Var{k,0}))
+      String/flatten(["μ", k, ". ", f])
     case @Let{v,f}:
       v = Bend/show(v)
       f = Bend/show(f)
@@ -34,7 +24,7 @@ def Bend/show(tm: Bend/Term) -> String:
       t = Bend/show(t)
       String/flatten(["(", x, "::", t, ")"])
     case @Emp{}:
-      "⊥"
+      "Empty"
     case @Efq{}:
       "λ{}"
     case @Uni{}:
@@ -134,18 +124,6 @@ def Bend/show(tm: Bend/Term) -> String:
       "TODO"
     case @Op1{o,a}:
       "TODO"
-
-def U64/show(n: U64) -> String:
-  "TODO"
-
-def I64/show(n: I64) -> String:
-  "TODO"
-
-def F64/show(n: F64) -> String:
-  "TODO"
-
-def I64/gte(a: I64, b: I64) -> Bool:
-  True
 
 def Bend/NTyp/show(t: Bend/NTyp) -> String:
   match t:
