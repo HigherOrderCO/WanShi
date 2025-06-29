@@ -1,4 +1,4 @@
-def Bend/show(tm: Bend/Term) -> String:
+def Bend/Term/show(tm: Bend/Term) -> String:
   match tm:
     case @Var{k,i}:
       k
@@ -7,21 +7,21 @@ def Bend/show(tm: Bend/Term) -> String:
     case @Sub{t}:
       "unreachable"
     case @Fix{k,f}:
-      f = Bend/show(f(@Var{k,0}))
+      f = Bend/Term/show(f(@Var{k,0}))
       String/flatten(["μ", k, ". ", f])
     case @Let{v,f}:
-      v = Bend/show(v)
-      f = Bend/show(f)
+      v = Bend/Term/show(v)
+      f = Bend/Term/show(f)
       String/flatten(["!", v, ";", f])
     case @Set{}:
       "Set"
     case @Ann{x,t}:
-      x = Bend/show(x)
-      t = Bend/show(t)
+      x = Bend/Term/show(x)
+      t = Bend/Term/show(t)
       String/flatten(["<", x, ":", t, ">"])
     case @Chk{x,t}:
-      x = Bend/show(x)
-      t = Bend/show(t)
+      x = Bend/Term/show(x)
+      t = Bend/Term/show(t)
       String/flatten(["(", x, "::", t, ")"])
     case @Emp{}:
       "Empty"
@@ -32,7 +32,7 @@ def Bend/show(tm: Bend/Term) -> String:
     case @One{}:
       "()"
     case @Use{f}:
-      f = Bend/show(f)
+      f = Bend/Term/show(f)
       String/flatten(["λ{ ():", f, " }"])
     case @Bit{}:
       "Bool"
@@ -41,97 +41,82 @@ def Bend/show(tm: Bend/Term) -> String:
     case @Bt1{}:
       "True"
     case @Bif{f,t}:
-      f = Bend/show(f)
-      t = Bend/show(t)
+      f = Bend/Term/show(f)
+      t = Bend/Term/show(t)
       String/flatten(["λ{ False: ", f, " ; True: ", t, " }"])
     case @Nat{}:
       "Nat"
     case @Zer{}:
       "0"
     case @Suc{n}:
-      n = Bend/show(n)
+      n = Bend/Term/show(n)
       String/flatten(["↑", n])
     case @Swi{z,s}:
-      z = Bend/show(z)
-      s = Bend/show(s)
+      z = Bend/Term/show(z)
+      s = Bend/Term/show(s)
       String/flatten(["λ{ 0: ", z, " ; +: ", s, " }"])
     case @Lst{t}:
-      t = Bend/show(t)
+      t = Bend/Term/show(t)
       String/flatten([t, "[]"])
     case @Nil{}:
       "[]"
     case @Con{h,t}:
-      h = Bend/show(h)
-      t = Bend/show(t)
+      h = Bend/Term/show(h)
+      t = Bend/Term/show(t)
       String/flatten([h, "<>", t])
     case @Mat{n,c}:
-      n = Bend/show(n)
-      c = Bend/show(c)
+      n = Bend/Term/show(n)
+      c = Bend/Term/show(c)
       String/flatten(["λ{ []:", n, " ; <>:", c, " }"])
     case @Enu{s}:
-      tags = List/map<String,String>(s, lambda tag. String/flatten(["@", tag]))
-      inner = String/join(tags, ",")
-      String/flatten(["{", inner, "}"])
+      ks = List/map<String,String>(s, λk. String/flatten(["@", k]))
+      ks = String/join(ks, ",")
+      String/flatten(["{", ks, "}"])
     case @Sym{s}:
       String/flatten(["@", s])
     case @Cse{c}:
-      cases = List/map<(String & Bend/Term),String>(c, lambda pair.
-        match pair:
-          case (s,t):
-            t_str = Bend/show(t)
-            String/flatten(["@", s, ": ", t_str]))
-      inner = String/join(cases, " ; ")
-      String/flatten(["λ{ ", inner, " }"])
+      c = List/map<(String & Bend/Term),String>(c, λ(s,t). String/flatten(["@", s, ": ", Bend/Term/show(t)]))
+      c = String/join(c, " ; ")
+      String/flatten(["λ{ ", c, " }"])
     case @Sig{a,b}:
-      a = Bend/show(a)
-      b = Bend/show(b)
+      a = Bend/Term/show(a)
+      b = Bend/Term/show(b)
       String/flatten(["Σ", a, ". ", b])
     case @Tup{a,b}:
-      a = Bend/show(a)
-      b = Bend/show(b)
+      a = Bend/Term/show(a)
+      b = Bend/Term/show(b)
       String/flatten(["(", a, ",", b, ")"])
     case @Get{f}:
-      f = Bend/show(f)
+      f = Bend/Term/show(f)
       String/flatten(["λ{ (,):", f, " }"])
     case @All{a,b}:
-      a = Bend/show(a)
-      b = Bend/show(b)
+      a = Bend/Term/show(a)
+      b = Bend/Term/show(b)
       String/flatten(["∀", a, ". ", b])
     case @Lam{k,f}:
-      body = Bend/show(f(@Var{k,0}))
-      String/flatten(["λ", k, ". ", body])
+      f = Bend/Term/show(f(@Var{k,0}))
+      String/flatten(["λ", k, ". ", f])
     case @App{f,x}:
-      f = Bend/show(f)
-      x = Bend/show(x)
+      f = Bend/Term/show(f)
+      x = Bend/Term/show(x)
       String/flatten(["(", f, " ", x, ")"])
     case @Eql{t,a,b}:
-      t = Bend/show(t)
-      a = Bend/show(a)
-      b = Bend/show(b)
+      t = Bend/Term/show(t)
+      a = Bend/Term/show(a)
+      b = Bend/Term/show(b)
       String/flatten([t, "{", a, "==", b, "}"])
     case @Rfl{}:
       "{==}"
     case @Rwt{f}:
-      f = Bend/show(f)
+      f = Bend/Term/show(f)
       String/flatten(["λ{ {==}:", f, " }"])
     case @Met{n,t,x}:
       "?"
     case @Num{t}:
       Bend/NTyp/show(t)
     case @Val{v}:
-      "TODO"
+      Bend/NVal/show(v)
     case @Op2{o,a,b}:
       "TODO"
     case @Op1{o,a}:
       "TODO"
-
-def Bend/NTyp/show(t: Bend/NTyp) -> String:
-  match t:
-    case @U64_T{}:
-      "U64"
-    case @I64_T{}:
-      "I64"
-    case @F64_T{}:
-      "F64"
-    case @CHR_T{}:
-      "Char"

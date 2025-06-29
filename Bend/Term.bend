@@ -75,7 +75,7 @@ type Bend/Term:
   case @Cse: # λ{@foo:f;@bar:b;...}
     c: (String & Bend/Term)[]
 
-  # NUmbers
+  # Numbers
   case @Num: # CHR | U64 | I64 | F64
     t: Bend/NTyp
   case @Val: # 123 | +123 | +123.0
@@ -123,3 +123,5 @@ type Bend/Term:
     n: U64
     t: Bend/Term
     x: Bend/Term[]
+
+def main : Set = Bend/Term
