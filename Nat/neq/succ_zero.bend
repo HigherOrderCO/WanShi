@@ -1,12 +1,9 @@
-def Nat/neq/succ_zero/(n: Nat) -> Set:
+def Nat/neq/succ_zero/swap(n: Nat) -> Set:
   match n:
     case 0n:
       Unit
     case 1n+p:
       Empty
 
-def Nat/neq/succ_zero(n: Nat) -> Not(Nat{0n == (1n+n)}):
-  λe.
-    bad = () :: Foo(0n)
-    rewrite e
-    ()
+def Nat/neq/succ_zero(n: Nat) -> Nat{0n != (1n+n)}:
+  lambda e. match e {}
