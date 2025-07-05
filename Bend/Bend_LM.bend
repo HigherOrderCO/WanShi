@@ -91,8 +91,9 @@ type Term:
     a: Term
     b: Term
   case @Rfl: # {==}
-  case @EqlM: # λ{ {==}: f }
+  case @EqlM: # λ{ {==}: f } : T
     f: Term
+    T: Term
 
   # Util
   case @Rwt:
@@ -165,8 +166,8 @@ def show(term: Term) -> String:
       return String/flat([show(t),"{",show(a),"==",show(b),"}"])
     case @Rfl:
       return "{==}"
-    case @EqlM{f}:
-      return String/flat(["λ{{==}:",show(f),"}"])
+    case @EqlM{f, T}:
+      return String/flat(["λ{{==}:",show(f),"} : ",show(T)])
     case @Rwt{a, b, x}:
       return String/flat(["rewrite ",show(a)," by ",show(b)," in ",show(x)])
 
@@ -234,12 +235,12 @@ def whnf_app(f: Term, x: Term) -> Term:
           whnf(@App{@App{f, whnf(a)}, whnf(b)})
         case x:
           @App{@SigM{f}, x}
-    case @EqlM{f}:
+    case @EqlM{f,T}:
       match whnf(x):
         case @Rfl:
           whnf(f)
         case x:
-          @App{@EqlM{f}, x}
+          @App{@EqlM{f,T}, x}
     case f:
       @App{f, x}
 
@@ -346,9 +347,10 @@ def cmp(lv: U64, d: Nat, a: Term, b: Term) -> Bool:
       e_t and e_a and e_b
     case @Rfl @Rfl:
       True
-    case @EqlM{a_f} @EqlM{b_f}:
+    case @EqlM{a_f, a_T} @EqlM{b_f, b_T}:
       e_f = eql(lv, d, a_f, b_f)
-      e_f
+      e_T = eql(lv, d, a_T, b_T)
+      e_f and e_T
     case @Rwt{a_a, a_b, a_x} @Rwt{b_a, b_b, b_x}:
       e_a = eql(lv, d, a_a, b_a)
       e_b = eql(lv, d, a_b, b_b)
@@ -449,9 +451,10 @@ def replace(lv: U64, d: Nat, old: Term, neo: Term, val: Term) -> Term:
         @Eql{r_t, r_a, r_b}
       case @Rfl:
         @Rfl
-      case @EqlM{f}:
+      case @EqlM{f, T}:
         r_f = replace(lv, d, old, neo, f)
-        @EqlM{r_f}
+        r_T = replace(lv, d, old, neo, T)
+        @EqlM{r_f, r_T}
       case @Rwt{a, b, x}:
         r_a = replace(lv, d, old, neo, a)
         r_b = replace(lv, d, old, neo, b)
@@ -575,7 +578,7 @@ def infer(d: Nat, ctx: Term[], term: Term) -> Maybe<Term>:
                   @Some{@Set}
     case @Rfl:
       @None
-    case @EqlM{f}:
+    case @EqlM{f, T}:
       @None
     case @Rwt{a, b, x}:
       @None # TODO
@@ -752,12 +755,13 @@ def check(d: Nat, ctx: Term[], term: Term, goal: Term) -> Maybe<Unit>:
             case _:
               @None
         # Equality Match
-        case @EqlM{f}:
+        case @EqlM{f, T}:
           match whnf(goal):
             case @All{k, a, b}:
               match whnf(a):
                 case @Eql{t, x, y}:
                   check(d, ctx, f, b(@Rfl))
+                  # TODO: use motive to replace x by y
                 case _:
                   @None
             case _:

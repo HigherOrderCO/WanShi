@@ -99,10 +99,9 @@ type Term:
     a: Term
     b: Term
   case @Rfl: # {==}
-  case @EqlM: # ~ x { {==}: f } : T
+  case @EqlM: # ~ x { {==}: f }
     x: Term
     f: Term
-    T: Term
 
   # Util
   case @Rwt:
@@ -175,8 +174,8 @@ def show(term: Term) -> String:
       return String/flat([show(t),"{",show(a),"==",show(b),"}"])
     case @Rfl:
       return "{==}"
-    case @EqlM{x, f, T}:
-      return String/flat(["~",show(x),"{{==}:",show(f),"}:",show(T)])
+    case @EqlM{x, f}:
+      return String/flat(["~",show(x),"{{==}:",show(f),"}"])
     case @Rwt{a, b, x}:
       return String/flat(["rewrite ",show(a)," by ",show(b)," in ",show(x)])
 
@@ -201,8 +200,8 @@ def whnf(term: Term) -> Term:
       whnf_lst(x, n, c)
     case @SigM{x,f}:
       whnf_sig(x, f)
-    case @EqlM{x,f,T}:
-      whnf_eql(x, f, T)
+    case @EqlM{x,f}:
+      whnf_eql(x, f)
     case x:
       x
 
@@ -260,12 +259,12 @@ def whnf_sig(x: Term, f: Term) -> Term:
     case x:
       @SigM{x, f}
 
-def whnf_eql(x: Term, f: Term, T: Term) -> Term:
+def whnf_eql(x: Term, f: Term) -> Term:
   match whnf(x):
     case @Rfl:
       whnf(f)
     case x:
-      @EqlM{x, f, T}
+      @EqlM{x, f}
 
 # Equal
 # -----
@@ -376,11 +375,10 @@ def cmp(lv: U64, d: Nat, a: Term, b: Term) -> Bool:
       e_t and e_a and e_b
     case @Rfl @Rfl:
       True
-    case @EqlM{a_x, a_f, a_T} @EqlM{b_x, b_f, b_T}:
+    case @EqlM{a_x, a_f} @EqlM{b_x, b_f}:
       e_x = eql(lv, d, a_x, b_x)
       e_f = eql(lv, d, a_f, b_f)
-      e_T = eql(lv, d, a_T, b_T)
-      e_x and e_f and e_T
+      e_x and e_f
     case @Rwt{a_a, a_b, a_x} @Rwt{b_a, b_b, b_x}:
       e_a = eql(lv, d, a_a, b_a)
       e_b = eql(lv, d, a_b, b_b)
@@ -487,11 +485,10 @@ def replace(lv: U64, d: Nat, old: Term, neo: Term, val: Term) -> Term:
         @Eql{r_t, r_a, r_b}
       case @Rfl:
         @Rfl
-      case @EqlM{x, f, T}:
+      case @EqlM{x, f}:
         r_x = replace(lv, d, old, neo, x)
         r_f = replace(lv, d, old, neo, f)
-        r_T = replace(lv, d, old, neo, T)
-        @EqlM{r_x, r_f, r_T}
+        @EqlM{r_x, r_f}
       case @Rwt{a, b, x}:
         r_a = replace(lv, d, old, neo, a)
         r_b = replace(lv, d, old, neo, b)
@@ -615,7 +612,7 @@ def infer(d: Nat, ctx: Term[], term: Term) -> Maybe<Term>:
                   @Some{@Set}
     case @Rfl:
       @None
-    case @EqlM{x, f, T}:
+    case @EqlM{x, f}:
       @None
     case @Rwt{a, b, x}:
       @None # TODO
@@ -792,20 +789,16 @@ def check(d: Nat, ctx: Term[], term: Term, goal: Term) -> Maybe<Unit>:
             case _:
               @None
         # Equality Match
-        case @EqlM{x, f, T}:
-          match equal(d, T, goal):
-            case False:
+        case @EqlM{x, f}:
+          match infer(d, ctx, x):
+            case @None:
               @None
-            case True:
-              match infer(d, ctx, x):
-                case @None:
+            case @Some{x_type}:
+              match whnf(x_type):
+                case @Eql{t, a, b}:
+                  check(d, ctx, f, @Rwt{a, b, @Rwt{x, @Rfl, goal}})
+                case _:
                   @None
-                case @Some{x_type}:
-                  match whnf(x_type):
-                    case @Eql{t, a, b}:
-                      check(d, ctx, f, @Rwt{x, @Rfl, goal})
-                    case _:
-                      @None
         # Default: verify by inference
         case _:
           verify(d, ctx, term, goal)
