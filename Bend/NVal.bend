@@ -1,9 +1,0 @@
-type Bend/NVal:
-  case @U64_V:
-    v: U64
-  case @I64_V:
-    v: I64
-  case @F64_V:
-    v: F64
-  case @CHR_V:
-    v: Char

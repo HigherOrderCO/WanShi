@@ -7,4 +7,4 @@ def Nat/succ/inj(n: Nat, m: Nat, e: Nat{(1n+n)==(1n+m)}) -> Nat{n==m}:
     case 0n 1n+m e:
       absurd e
     case 1n+n 1n+m e:
-      Equal/app<Nat,Nat>(1n+1n+n, 1n+1n+m, Nat/pred, e)
+      ()

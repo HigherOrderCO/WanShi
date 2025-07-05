@@ -3,4 +3,4 @@ def Nat/add/assoc(a: Nat, b: Nat, c: Nat) -> Nat{Nat/add(Nat/add(a,b),c) == Nat/
     case 0n:
       finally
     case 1n+ap:
-      1n + Nat/add/assoc(ap,b,c)
+      ()
