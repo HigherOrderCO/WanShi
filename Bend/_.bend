@@ -1,4 +1,4 @@
-#./PROMPT.bend#
+#./../PROMPT.bend#
 
 # Bend-in-Bend:
 
@@ -34,7 +34,7 @@ type Term:
   case @Lam: # λx.f
     k: String
     f: Term -> Term
-  case @App: # (f x)
+  case @App: # f(x)
     f: Term
     x: Term
 
@@ -54,17 +54,17 @@ type Term:
   case @Bit:  # Bool
   case @Bt0:  # False
   case @Bt1:  # True
-  case @BitM: # ~ x { #0: f ; #1: t }
+  case @BitM: # ~ x { False: f ; True: t }
     x: Term
     f: Term
     t: Term
 
   # Nat
   case @Nat: # Nat
-  case @Zer: # 0
-  case @Suc: # ↑n
+  case @Zer: # 0n
+  case @Suc: # 1n+n
     n: Term
-  case @NatM: # ~ x { 0: z ; ↑: s }
+  case @NatM: # ~ x { 0n: z ; 1n+: s }
     x: Term
     z: Term
     s: Term
@@ -760,7 +760,47 @@ def verify(d: Nat, ctx: Term[], term: Term, goal: Term) -> Maybe<Unit>:
 # Main
 # ----
 
-def main : Maybe<Unit> =
-  T = @All{@Nat, λx. @All{@Bit, λy. @Nat}} :: Term
-  x = @Lam{"x", λx. @Lam{"y", λy. x}} :: Term
-  check(0n, [], x, T)
+type Def:
+  case @Def:
+    tm: Term
+    ty: Term
+
+def tm(df: Def) -> Term:
+  @Def{tm,ty} = df 
+  tm
+
+def ty(df: Def) -> Term:
+  @Def{tm,ty} = df 
+  ty
+
+# ex0_f : ∀x:Nat. ∀y:Bit. Nat =
+#   λx. λy. x
+def ex0_f : Def =
+  @Def{
+    @Lam{"x", λx. @Lam{"y", λy. x}},
+    @All{@Nat, λx. @All{@Bit, λy. @Nat}}
+  }
+
+# not_f : ∀x:Bit. Bit =
+#   λx. ~ x { False: True ; True: False }
+def not_f : Def =
+  @Def{
+    @Lam{"x", λx. @BitM{x, @Bt1, @Bt0}},
+    @All{@Bit, λx. @Bit}
+  }
+
+# bft_f : ∀x:Bit. Bit{not(not(x)) == x} =
+#   ~ x { False: {==} ; True: {==} }
+def bft_f : Def =
+  @Def{
+    @Lam{"x", λx. @BitM{x, @Rfl, @Rfl}},
+    @All{@Bit, λx. @Eql{@Bit, @App{tm(not_f), @App{tm(not_f), x}}, x}}
+  }
+
+def main : Term =
+  @Def{x,T} = bft_f
+  match check(0n, [], x, T):
+    case @None:
+      @Var{0n}
+    case @Some{_}:
+      whnf(x)
