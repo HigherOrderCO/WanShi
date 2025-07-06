@@ -1,4 +1,4 @@
-def Set/And/_and_then_pair<A,B>() -> Set/And(A,B) -> Σa:A.B:
+def Set/And/_and_then_pair<A,B>() -> Set/And(A,B) -> Proof/and(A,B):
   λnd.
     a = nd(A,Set/Identities/A_then_B_then_A<A,B>)
     b = nd(A,Set/Identities/A_then_B_then_B<A,B>)
