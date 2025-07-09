@@ -1,0 +1,31 @@
+def Nat/add/commutative() -> Proof/algebra/commutative<Nat,Nat>(Nat/add):
+  λa.λb.
+  match a:
+    case 0n:
+      rewrite Nat/add/zero_unit_right(b)
+      finally
+    case 1n + pa:
+      ind = Nat/add/commutative(pa,b)
+      rewrite ind
+      rewrite Nat/succ/add_suc_right(b,pa)
+      finally
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
