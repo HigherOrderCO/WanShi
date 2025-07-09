@@ -1,4 +1,4 @@
-def Nat/add/cancellation_right() -> ∀a:Nat . ∀b:Nat . ∀c:Nat . Nat{Nat/add(a,c) == Nat/add(b,c)} -> Nat{a == b}:
+def Nat/add/preserves_eq_right() -> ∀a:Nat . ∀b:Nat . ∀c:Nat . Nat{a == b} -> Nat{Nat/add(a,c) == Nat/add(b,c)}:
   λa.λb.λc.λeq.
     match c:
       case 0n:
@@ -6,7 +6,7 @@ def Nat/add/cancellation_right() -> ∀a:Nat . ∀b:Nat . ∀c:Nat . Nat{Nat/add
         rewrite Nat/add/unit_right(b)
         eq
       case 1n+pc:
-        ind = Nat/add/cancellation_right(a,b,pc)
+        ind = Nat/add/preserves_eq_right(a,b,pc,eq)
         rewrite Nat/succ/add_suc_right(a,pc)
         rewrite Nat/succ/add_suc_right(b,pc)
-        ind(Nat/pred/preserves_eq(1n+Nat/add(a,pc),1n+Nat/add(b,pc), eq))
+        Nat/succ/preserves_eq(Nat/add(a,pc), Nat/add(b,pc), ind)
