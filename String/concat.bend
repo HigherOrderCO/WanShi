@@ -1,5 +1,7 @@
-# String concatenation - simplified version that works with Bend
-def String/concat(a: String, b: String) -> String:
-  # For now, just return the first string as a placeholder
-  # In a full implementation, you'd properly concatenate
-  return a
+
+def String/concat(strings: String[]) -> String:
+  match strings:
+    case []:
+      return ""
+    case s <> ss:
+      return String/append(s, String/concat(ss))
