@@ -3,16 +3,20 @@ def Map/set<V>(map: Map<V>, key: Bits, val: V) -> Map<V>:
     case @Leaf:
       match key:
         case @E:
-          return @Node{val, @Leaf, @Leaf}
+          return @Node{@Some{val}, @Leaf, @Leaf}
         case @O{key}:
-          return @Node{val, Map/set<V>(@Leaf, key, val), @Leaf}
+          lft = Map/set<V>(@Leaf, key, val)
+          return @Node{@None, lft, @Leaf}
         case @I{key}:
-          return @Node{val, @Leaf, Map/set<V>(@Leaf, key, val)}
+          rgt = Map/set<V>(@Leaf, key, val)
+          return @Node{@None, @Leaf, rgt}
     case @Node{x, l, r}:
       match key:
         case @E:
-          return @Node{val, l, r}
+          return @Node{@Some{val}, l, r}
         case @O{key}:
-          return @Node{x, Map/set<V>(l, key, val), r}
+          lft = Map/set<V>(l, key, val)
+          return @Node{x, lft, r}
         case @I{key}:
-          return @Node{x, l, Map/set<V>(r, key, val)}
+          rgt = Map/set<V>(r, key, val)
+          return @Node{x, l, rgt}

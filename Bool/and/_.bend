@@ -1,6 +1,6 @@
 def Bool/and(a: Bool, b: Bool) -> Bool:
-  match a b:
-    case True True:
-      True
-    case c    d:
+  match a:
+    case False:
       False
+    case True:
+      b
