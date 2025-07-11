@@ -1,0 +1,81 @@
+
+type BendRW/Term:
+  case @Var:
+    k: String
+    i: Nat
+  case @Sub:
+    t: BendRW/Term
+  case @Let:
+    k: String
+    T: BendRW/Term
+    v: BendRW/Term
+    f: BendRW/Term -> BendRW/Term
+  case @Fix:
+    k: String
+    f: BendRW/Term -> BendRW/Term
+  case @Set:
+  case @All:
+    k: String
+    a: BendRW/Term
+    b: BendRW/Term -> BendRW/Term
+  case @Lam:
+    k: String
+    f: BendRW/Term -> BendRW/Term
+  case @App:
+    f: BendRW/Term
+    x: BendRW/Term
+  case @Emp:
+  case @EmpM:
+    x: BendRW/Term
+  case @Uni:
+  case @One:
+  case @UniM:
+    x: BendRW/Term
+    f: BendRW/Term
+  case @Bit:
+  case @Bt0:
+  case @Bt1:
+  case @BitM:
+    x: BendRW/Term
+    f: BendRW/Term
+    t: BendRW/Term
+  case @Nat:
+  case @Zer:
+  case @Suc:
+    n: BendRW/Term
+  case @NatM:
+    x: BendRW/Term
+    z: BendRW/Term
+    s: BendRW/Term
+  case @Lst:
+    t: BendRW/Term
+  case @Nil:
+  case @Con:
+    h: BendRW/Term
+    t: BendRW/Term
+  case @LstM:
+    x: BendRW/Term
+    n: BendRW/Term
+    c: BendRW/Term
+  case @Sig:
+    k: String
+    a: BendRW/Term
+    b: BendRW/Term -> BendRW/Term
+  case @Tup:
+    a: BendRW/Term
+    b: BendRW/Term
+  case @SigM:
+    x: BendRW/Term
+    f: BendRW/Term
+  case @Eql:
+    t: BendRW/Term
+    a: BendRW/Term
+    b: BendRW/Term
+  case @Rfl:
+  case @EqlM:
+    x: BendRW/Term
+    f: BendRW/Term
+  case @Rwt:
+    a: BendRW/Term
+    b: BendRW/Term
+    x: BendRW/Term
