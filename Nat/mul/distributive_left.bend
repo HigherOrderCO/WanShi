@@ -1,4 +1,4 @@
-def Nat/mul/distributive_left() -> Proof/algebra/distributive_left<Nat>(Nat/mul, Nat/add):
+def Nat/mul/distributive_left() -> Algebra/distributive_left<Nat>(Nat/mul, Nat/add):
   λa.λb.λc.
     match c:
       case 0n:

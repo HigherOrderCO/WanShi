@@ -1,4 +1,4 @@
-def Nat/mul/associative() -> Proof/algebra/associative(Nat, Nat/mul):
+def Nat/mul/associative() -> Algebra/associative(Nat, Nat/mul):
   λa.λb.λc.
     match a:
       case 0n:

@@ -1,4 +1,4 @@
-def Nat/mul/distributive_right() -> Proof/algebra/distributive_right<Nat>(Nat/mul, Nat/add): 
+def Nat/mul/distributive_right() -> Algebra/distributive_right<Nat>(Nat/mul, Nat/add): 
   λa.λb.λc.
     rewrite Nat/mul/commutative(Nat/add(a,b),c)
     rewrite Nat/mul/commutative(a,c)
