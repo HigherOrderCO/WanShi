@@ -1,4 +1,4 @@
-def Nat/mul/commutative() -> Proof/algebra/commutative(Nat, Nat, Nat/mul):
+def Nat/mul/commutative() -> Algebra/commutative(Nat, Nat, Nat/mul):
   λa.λb.
     match b:
       case 0n:

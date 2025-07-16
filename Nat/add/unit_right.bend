@@ -1,4 +1,4 @@
-def Nat/add/unit_right() -> Proof/algebra/unit_right(Nat, Nat/add,0n):
+def Nat/add/unit_right() -> Algebra/unit_right(Nat, Nat/add,0n):
   λa.
   match a:
     case 0n:
