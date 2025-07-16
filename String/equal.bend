@@ -1,11 +1,12 @@
-# String equality for lambda calculus variable names
-def String/equal(a: String, b: String) -> Bool:
-  match a:
-    case "x":
-      match b:
-        case "x":
-          return True
-        case _:
-          return False
-    case _:
-      return False
+def String/equal(x: String, y: String) -> Bool:
+  match x y:
+    case [] []:
+      True
+    case x<>xs []:
+      False
+    case [] y<>ys:
+      False
+    case x<>xs y<>ys:
+      Bool/and(x === y, String/equal(xs, ys))
+      
+#def main : Bool = String/equal("fox","foo")
