@@ -1,9 +1,10 @@
-
+# Lambda Calculus Term definition
 type LC/Term:
   case @Var:
-    idx: Nat
-  case @Abs:
+    name: String
+  case @Lam:
+    param: String
     body: LC/Term
   case @App:
-    f: LC/Term
+    func: LC/Term
     arg: LC/Term
